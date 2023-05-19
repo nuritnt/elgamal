@@ -52,7 +52,12 @@ public class Elgamal {
             // Text mit private Key entschlüsseln
             String computedDecryptedMsg = decrypt(n, g, privKey, computedEncryptedMsg);
             // Entschlüsselte Nachricht ausgeben
-            System.out.println("Entschlüsselte Nachricht: " + computedDecryptedMsg);
+            System.out.println("Entschlüsselung aus text.txt: " + computedDecryptedMsg);
+
+
+            String encryptedContent = readFileAsString("chiffre.txt");
+            String decryptedContent = decrypt(n, g, privKey, encryptedContent);
+            System.out.println("Entschlüsselung aus chiffre.txt: " + decryptedContent);
         } catch (IOException e) {
             e.printStackTrace();
         }
