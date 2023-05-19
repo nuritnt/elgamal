@@ -1,0 +1,9 @@
+Lieber Herr Vogt,
+
+Wir haben auch eine Aufgabe für Sie:
+
+pk: (187,3)
+Chiffre: 76,100,102,99,43,128,95,118,43,4,95,121,111,43,86,145,7,33
+
+Viel Spass beim Brute-Forcen ;)
+Lg. Meredit, Elias, Bivio
