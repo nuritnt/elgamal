@@ -2,6 +2,7 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -25,43 +26,73 @@ public class Elgamal {
         BigInteger g = BigInteger.valueOf(2);
 
         // Schlüsselpaare generieren
+        // Für Unsere
         BigInteger[] keys = generateKeys(n, g);
-        BigInteger pubKey = keys[0];
-        BigInteger privKey = keys[1];
+        BigInteger chosenPubKey = keys[0];
+        BigInteger chosenPrivKey = keys[1];
 
-        saveKeyToFile("pk.txt", pubKey);
-        saveKeyToFile("sk.txt", privKey);
+        // Nur ausführen, für unser eigenen Chiffre!
+        // Eigene Chiffre ver- und entschlüsseln
+        saveKeyToFile("chosenPk.txt", chosenPubKey);
+        saveKeyToFile("chosenSk.txt", chosenPrivKey);
+
 
         try {
+            // Für Gegebene Key holen
+            BigInteger givenPubKey = new BigInteger(readFileAsString("pk.txt"));
+            BigInteger givenPrivKey = new BigInteger(readFileAsString("sk.txt"));
+
             // 3. Text aus text.txt verschüsseln
             // Holt Text von "text.txt"
             String msg = readFileAsString("text.txt");
             // Verschlüsselt Text mit öffentlichen Schlüssel
-            String encryptedMsg = encrypt(n, g, pubKey, msg);
-            // Verschlüsselten Text >> "chiffre.txt"
-            writeFile("chiffre.txt", encryptedMsg);
+            String encryptedMsg = encrypt(n, g, chosenPubKey, msg);
+            // Verschlüsselten Text >> "chiffre_gruppe.txt"
+            writeFile("chiffre_gruppe.txt", encryptedMsg);
 
             // 4. Text aus chiffre.txt mit dem privaten Schlüssel aus sk.txt entschlüsseln
             // Holt Text von "chiffre.txt"
-            String encryptedMsgFile = readFileAsString("chiffre.txt");
+            String encryptedMsgFile = readFileAsString("chiffre_gruppe.txt");
             // Text entschlüsseln mit private Key
-            String decryptedMsg = decrypt(n, g, privKey, encryptedMsgFile);
+            String decryptedMsg = decrypt(n, g, chosenPrivKey, encryptedMsgFile);
             // Entschlüsselten Text >> "text-d.txt"
             writeFile("text-d.txt", decryptedMsg);
+            System.out.println("Entschlüsselung aus text.txt: " + decryptedMsg);
 
-            // 5. Text aus chiffre.txt mit dem gegebenen Schlüssel aus sk.txt entschlüsseln
-            String computedEncryptedMsg = readFileAsString("chiffre.txt");
+            // 5. Text aus chiffre.txt und chiffre_gruppe.txt mit den gegebenen Schlüsseln entschlüsseln
             // Text mit private Key entschlüsseln
-            String computedDecryptedMsg = decrypt(n, g, privKey, computedEncryptedMsg);
             // Entschlüsselte Nachricht ausgeben
-            System.out.println("Entschlüsselung aus text.txt: " + computedDecryptedMsg);
-
             String encryptedContent = readFileAsString("chiffre.txt");
-            String decryptedContent = decrypt(n, g, privKey, encryptedContent);
+            String decryptedContent = decrypt(n, g, givenPrivKey, encryptedContent);
             System.out.println("Entschlüsselung aus chiffre.txt: " + decryptedContent);
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+//        try {
+//            // Text aus "text.txt" lesen
+//            String msg = readFileAsString("text.txt");
+//            // Text mit dem öffentlichen Schlüssel verschlüsseln
+//            String encryptedMsg = encrypt(n, g, pubKey, msg);
+//            // Verschlüsselten Text in "chiffre.txt" schreiben
+//            writeFile("chiffre.txt", encryptedMsg);
+//
+//            // Verschlüsselten Text aus "chiffre.txt" lesen
+//            String encryptedMsgFile = readFileAsString("chiffre.txt");
+//            // Text mit dem privaten Schlüssel entschlüsseln
+//            String decryptedMsg = decrypt(n, g, privKey, encryptedMsgFile);
+//            // Entschlüsselten Text in "text-d.txt" schreiben
+//            writeFile("text-d.txt", decryptedMsg);
+//
+//            // Verschlüsselten Text erneut aus "chiffre.txt" lesen
+//            String computedEncryptedMsg = readFileAsString("chiffre.txt");
+//            // Text mit dem privaten Schlüssel erneut entschlüsseln
+//            String computedDecryptedMsg = decrypt(n, g, privKey, computedEncryptedMsg);
+//            // Entschlüsselten Text ausgeben
+//            System.out.println("Entschlüsselung aus chiffre.txt: " + computedDecryptedMsg);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
     }
 
     // Generiert Schlüsselpaar aus öff. und priv. Keys
@@ -116,7 +147,7 @@ public class Elgamal {
     }
 
     // File helpers
-    // Hier haben wir uns mit Googel helfen lassen.
+    // Hier haben wir uns mit Google helfen lassen.
     private static void saveKeyToFile(String fileName, BigInteger key) {
         writeFile(fileName, key.toString());
     }
