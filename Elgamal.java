@@ -17,8 +17,10 @@ public class Elgamal {
                 "E39E772C 180E8603 9B2783A2 EC07A28F B5C55DF0 6F4C52C9 DE2BCBF6 95581718 3995497C EA956AE5 " +
                 "15D22618 98FA0510 15728E5A 8AACAA68 FFFFFFFF FFFFFFFF";
 
-        hex = hex.replaceAll("\\s", ""); // Remove all whitespace characters from the string
+        // Whitespaces vom String entfernen
+        hex = hex.replaceAll("\\s", "");
 
+        // Hex String in BigInt konvertieren
         BigInteger n = new BigInteger(hex, 16);
         BigInteger g = BigInteger.valueOf(2);
 
@@ -53,7 +55,6 @@ public class Elgamal {
             String computedDecryptedMsg = decrypt(n, g, privKey, computedEncryptedMsg);
             // Entschlüsselte Nachricht ausgeben
             System.out.println("Entschlüsselung aus text.txt: " + computedDecryptedMsg);
-
 
             String encryptedContent = readFileAsString("chiffre.txt");
             String decryptedContent = decrypt(n, g, privKey, encryptedContent);
@@ -115,7 +116,7 @@ public class Elgamal {
     }
 
     // File helpers
-    // Hier haben wir uns mit Googeln helfen lassen.
+    // Hier haben wir uns mit Googel helfen lassen.
     private static void saveKeyToFile(String fileName, BigInteger key) {
         writeFile(fileName, key.toString());
     }
