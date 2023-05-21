@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.Random;
 import java.util.stream.Collectors;
 
+
 public class Elgamal {
 
     public static void main(String[] args) {
@@ -152,6 +153,7 @@ public class Elgamal {
         writeFile(fileName, key.toString());
     }
 
+    //writeToFile
     private static void writeFile(String fileName, String content) {
         try {
             Files.writeString(Paths.get(fileName), content);
@@ -159,6 +161,13 @@ public class Elgamal {
             e.printStackTrace();
         }
     }
+    //private static void writeFile(String fileName, String content) {
+    //    try {
+    //        Files.writeString(Paths.get(fileName), content);
+    //    } catch (IOException e) {
+    //        e.printStackTrace();
+    //    }
+    //}
 
     private static String readFileAsString(String fileName) throws IOException {
         return Files.readString(Paths.get(fileName));
