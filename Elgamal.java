@@ -3,10 +3,7 @@ import java.math.BigInteger;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -41,14 +38,26 @@ public class Elgamal {
 
 
         System.out.println("Our additional feature because of our group size:");
-        // Define Number for Generator
-        int number = 12;
+
+        // method that prints sophie germain primes until 1000
+
+        System.out.println("Sophie Germain Primes until 1000: " + Arrays.toString(getSophieGermainPrimes(1000).toArray()));
+
+
+        //choose between random or specific given. The one you don't use just comment out.
+
+        // Random number from generator until 1000
+        //int number = new Random().nextInt(1000);
+
+        // specific given number
+        int number = 29;
+
         // Print Generator
         System.out.println("One generator of " + number + " is: " + getGenerator(BigInteger.valueOf(number)));
         // Print all Generators
-
+        ArrayList<BigInteger> generators = (ArrayList<BigInteger>) getGenerators( BigInteger.valueOf(number));
         System.out.println("And just because it was fun, we added this method to find all generators of a given number:");
-        System.out.println("All generators of " + number + " are: " + getGenerators( BigInteger.valueOf(number)));
+        System.out.println("The " + generators.stream().count() +  " generators of " + number + " are: " + generators.stream().map(BigInteger::toString).collect(Collectors.joining(", ")));
 
         System.out.println("\nAnd here the results of the earlier assignments: ");
 
@@ -110,6 +119,20 @@ public class Elgamal {
 //        } catch (IOException e) {
 //            e.printStackTrace();
 //        }
+    }
+
+    private static Collection<Object> getSophieGermainPrimes(int i) {
+        ArrayList<BigInteger> sophieGermainPrimes = new ArrayList<>();
+        for (int j = 0; j < i; j++) {
+            if (isPrime(BigInteger.valueOf(j)) && isPrime(BigInteger.valueOf(2 * j + 1))) {
+                sophieGermainPrimes.add(BigInteger.valueOf(j));
+            }
+        }
+        return Collections.singleton(sophieGermainPrimes);
+    }
+
+    private static boolean isPrime(BigInteger bigInteger) {
+        return bigInteger.isProbablePrime(1);
     }
 
     // Generiert Schlüsselpaar aus öff. und priv. Keys
