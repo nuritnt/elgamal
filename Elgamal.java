@@ -3,7 +3,9 @@ import java.math.BigInteger;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
@@ -38,6 +40,19 @@ public class Elgamal {
         saveKeyToFile("chosenSk.txt", chosenPrivKey);
 
 
+        System.out.println("Our additional feature because of our group size:");
+        // Define Number for Generator
+        int number = 12;
+        // Print Generator
+        System.out.println("One generator of " + number + " is: " + getGenerator(BigInteger.valueOf(number)));
+        // Print all Generators
+
+        System.out.println("And just because it was fun, we added this method to find all generators of a given number:");
+        System.out.println("All generators of " + number + " are: " + getGenerators( BigInteger.valueOf(number)));
+
+        System.out.println("\nAnd here the results of the earlier assignments: ");
+
+
         try {
             // Für Gegebene Key holen
             BigInteger givenPubKey = new BigInteger(readFileAsString("pk.txt"));
@@ -69,6 +84,7 @@ public class Elgamal {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
 
 //        try {
 //            // Text aus "text.txt" lesen
@@ -138,12 +154,21 @@ public class Elgamal {
     }
 
     // Random BigInteger generieren mit Range [0, n-1]
+    //private static BigInteger getRandomBigInt(BigInteger n) {
+    //    BigInteger maxRange = n.subtract(BigInteger.ONE);
+    //    BigInteger randomBigInt;
+    //    do {
+    //        randomBigInt = new BigInteger(maxRange.bitLength(), new Random());
+    //    } while (randomBigInt.compareTo(maxRange) >= 0);
+    //    return randomBigInt;
+    //}
+
     private static BigInteger getRandomBigInt(BigInteger n) {
         BigInteger maxRange = n.subtract(BigInteger.ONE);
         BigInteger randomBigInt;
         do {
             randomBigInt = new BigInteger(maxRange.bitLength(), new Random());
-        } while (randomBigInt.compareTo(maxRange) >= 0);
+        } while (randomBigInt.compareTo(maxRange) >= 0 || randomBigInt.compareTo(BigInteger.ZERO) <= 0);
         return randomBigInt;
     }
 
@@ -172,4 +197,49 @@ public class Elgamal {
     private static String readFileAsString(String fileName) throws IOException {
         return Files.readString(Paths.get(fileName));
     }
+
+    //Für den vollen Bonus können Sie das Elgamal-Verfahren noch um folgende Funktion erweitern:
+    // Die Funktion bekommt als Eingabe eine Sophie-Germain Primzahl p und gibt einen Erzeuger der Gruppe (Z_p*,*_p) zurück.
+    // Dazu ist im wesentlichen der Erzeugertestalgorithmus zu implementieren. p = 2 * n + 1
+
+    private static BigInteger getGenerator(BigInteger p) {
+        BigInteger pMinusOne = p.subtract(BigInteger.ONE);
+        BigInteger divider1 = BigInteger.TWO;
+        BigInteger divider2 = pMinusOne.divide(BigInteger.TWO);
+
+        BigInteger g = BigInteger.ONE;
+        while (g.equals(BigInteger.ONE)) {
+            BigInteger h = getRandomBigInt(p);
+            if (h.modPow(pMinusOne.divide(divider1), p).equals(BigInteger.ONE)) {
+                continue;
+            }
+            if (h.modPow(pMinusOne.divide(divider2), p).equals(BigInteger.ONE)) {
+                continue;
+            }
+            g = h;
+        }
+        return g;
+    }
+
+    // method that calculates all generators of a give number p
+    private static List<BigInteger> getGenerators(BigInteger p) {
+        BigInteger pMinusOne = p.subtract(BigInteger.ONE);
+        BigInteger divider1 = BigInteger.TWO;
+        BigInteger divider2 = pMinusOne.divide(BigInteger.TWO);
+
+        List<BigInteger> generators = new ArrayList<>();
+        for (BigInteger i = BigInteger.ONE; i.compareTo(p) < 0; i = i.add(BigInteger.ONE)) {
+            BigInteger h = i;
+            if (h.modPow(pMinusOne.divide(divider1), p).equals(BigInteger.ONE)) {
+                continue;
+            }
+            if (h.modPow(pMinusOne.divide(divider2), p).equals(BigInteger.ONE)) {
+                continue;
+            }
+            generators.add(h);
+        }
+        return generators;
+    }
+
+
 }
